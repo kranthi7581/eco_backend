@@ -8,6 +8,7 @@ const Address = sequelize_orm.define(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      allowNull: false,
     },
     userId: {
       type: DataTypes.INTEGER,
