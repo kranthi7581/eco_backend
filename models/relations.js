@@ -10,7 +10,7 @@ const orderItems = require("./USER/orderItems");
 const coupons = require("./ADMIN/coupon");
 const payment = require("./USER/payment");
 const Address = require("./USER/Address");
-const Review = require("./USER/review");
+const Review = require("./USER/Review");
 
 // Define associations for categories
 Category.hasMany(subcategory, {
