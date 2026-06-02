@@ -32,6 +32,7 @@ const Review = sequelize_orm.define(
         },
     {
         timestamps: true,
+        freezeTableName: true,
     }
 );
 

@@ -49,6 +49,7 @@ const User = sequelize_orm.define(
   },
   {
     timestamps: true,
+    freezeTableName: true,
   },
 );
 
