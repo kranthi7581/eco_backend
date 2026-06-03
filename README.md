@@ -1,1 +1,1 @@
-![ER Diagram](ecommerce_er_diagram.png)
+![ER Diagram](ecommerce_er_digram.png)
