@@ -17,14 +17,10 @@ router.post(
 );
 router.get(
   "/",
-  authmiddleware,
-  authorize("admin", "user"),
   productsController.getAllProducts,
 );
 router.get(
   "/:id",
-  authmiddleware,
-  authorize("admin", "user"),
   productsController.getProductById,
 );
 router.put(

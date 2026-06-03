@@ -17,14 +17,10 @@ router.post(
 );
 router.get(
   "/",
-  authmiddleware,
-  authorize("admin", "user"),
   categoryController.getAllCategories,
 );
 router.get(
   "/:id",
-  authmiddleware,
-  authorize("admin", "user"),
   categoryController.getCategoryById,
 );
 router.put(
