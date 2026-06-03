@@ -3,8 +3,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-require("dotenv").config();
 const path = require('path');
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const fileHelper = require("./utils/fileHelper");
 
 app.use(express.json());
@@ -24,6 +24,7 @@ const allowedOrigins = [
   "http://127.0.0.1:5174",
   "https://ecofrontend-vert.vercel.app",
   "https://ecofrontend-gules.vercel.app",
+  "https://ecofrontend-chi.vercel.app",
 ];
 
 app.use(
