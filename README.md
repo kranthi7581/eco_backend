@@ -259,7 +259,6 @@ Server is running on port 5000
 | **PUT** | `/review/:id` | User | Edits review content |
 | **DELETE** | `/review/:id` | User | Removes review |
 =======
-![ER Diagram](ecommerce_er_digram.png)
 >>>>>>> bcaf56339bb1f86ae60d61f7dd86937a7bccf7a5
 =======
 
