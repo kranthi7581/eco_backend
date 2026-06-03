@@ -397,9 +397,147 @@ Ecommerce Shop
   await sendEmail(user.email, subject, plainTextMessage, htmlMessage);
 };
 
+/**
+ * Generates the HTML layout for the registration welcome email
+ */
+const generateWelcomeHtml = (user) => {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Ecommerce Shop</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body style="background-color: #f8fafc; padding: 20px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);">
+    <!-- Header Banner -->
+    <tr>
+      <td align="center" style="background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); padding: 35px 20px; color: #ffffff;">
+        <h2 style="margin: 0; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: #a5b4fc;">
+          Welcome to Ecommerce Shop
+        </h2>
+        <h1 style="margin: 10px 0 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.025em;">
+          Account Created Successfully!
+        </h1>
+      </td>
+    </tr>
+
+    <!-- Body Content -->
+    <tr>
+      <td style="padding: 30px 24px;">
+        <p style="margin-top: 0; margin-bottom: 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+          Hello <strong>${user.username || "Valued Member"}</strong>,
+        </p>
+        <p style="font-size: 15px; line-height: 1.6; color: #475569; margin-bottom: 24px;">
+          Thank you for joining our community! We are excited to welcome you to Ecommerce Shop. Your account has been registered successfully, and you're now ready to start shopping.
+        </p>
+
+        <!-- Account Summary Box -->
+        <h4 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 600; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em;">
+          Account Details
+        </h4>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f1f5f9; border-radius: 12px; padding: 18px; margin-bottom: 30px;">
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">USERNAME</td>
+            <td align="right" style="font-size: 13px; color: #0f172a; padding-bottom: 8px; font-weight: 600;">${user.username}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">EMAIL ADDRESS</td>
+            <td align="right" style="font-size: 13px; color: #0f172a; padding-bottom: 8px; font-weight: 600;">${user.email}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">STATUS</td>
+            <td align="right" style="font-size: 13px; color: #10b981; padding-bottom: 8px; font-weight: 600;">Active</td>
+          </tr>
+        </table>
+
+        <!-- Tips Section -->
+        <div style="margin-bottom: 30px;">
+          <h4 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 600; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em;">
+            What's Next?
+          </h4>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #475569; line-height: 1.6;">
+            <li style="margin-bottom: 8px;">Explore our vast collection of products.</li>
+            <li style="margin-bottom: 8px;">Add your favorite items to your wishlist.</li>
+            <li style="margin-bottom: 8px;">Update your shipping addresses in your profile for faster checkout.</li>
+          </ul>
+        </div>
+
+        <!-- Call to Action -->
+        <div align="center" style="margin-top: 30px; margin-bottom: 10px;">
+          <a href="http://localhost:3000" style="background-color: #4f46e5; color: #ffffff; padding: 12px 24px; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px; display: inline-block;">
+            Explore Shop
+          </a>
+        </div>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="background-color: #f1f5f9; padding: 24px; text-align: center; border-top: 1px solid #e2e8f0;">
+        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">
+          You received this email because you registered an account on Ecommerce Shop.<br>
+          If you did not sign up for this account, please ignore this email or contact support.
+        </p>
+        <p style="margin: 10px 0 0 0; font-size: 12px; font-weight: 600; color: #475569;">
+          &copy; ${new Date().getFullYear()} Ecommerce Shop. All rights reserved.
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+};
+
+/**
+ * Main helper to send the welcome email
+ */
+const sendWelcomeEmail = async (user) => {
+  if (!user || !user.email) {
+    console.error("Cannot send email: User email not provided", user);
+    return;
+  }
+
+  const subject = `Welcome to Ecommerce Shop, ${user.username}!`;
+  
+  const plainTextMessage = `
+Hello ${user.username},
+
+Welcome to Ecommerce Shop! Your account has been registered successfully.
+
+Account Details:
+- Username: ${user.username}
+- Email: ${user.email}
+
+Start exploring our shop here: http://localhost:3000
+
+Thank you for joining us!
+Ecommerce Shop
+  `.trim();
+
+  const htmlMessage = generateWelcomeHtml(user);
+
+  console.log(`Sending welcome email to ${user.email}`);
+  await sendEmail(user.email, subject, plainTextMessage, htmlMessage);
+};
+
 module.exports = {
   sendOrderStatusEmail,
   generateOrderStatusHtml,
   sendPaymentSuccessEmail,
   generatePaymentSuccessHtml,
+  sendWelcomeEmail,
+  generateWelcomeHtml,
 };

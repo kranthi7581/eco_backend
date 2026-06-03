@@ -2,6 +2,7 @@ const userModel = require("../models/auth");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const { sendWelcomeEmail } = require("../utils/emailTemplates");
 dotenv.config();
 const secret = process.env.JWT_SECRET;
 const refreshSecret = process.env.REFRESH_SECRET || secret + "_refresh";
@@ -21,6 +22,12 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
+
+    // Send welcome email asynchronously
+    sendWelcomeEmail(newUser).catch((err) => {
+      console.error("Error sending registration welcome email:", err);
+    });
+
     res
       .status(201)
       .json({ message: "User created successfully", user: newUser });
@@ -233,6 +240,11 @@ const createUser = async (req, res) => {
       role: role || "user",
       image: image || null,
       is_active: is_active !== "false" && is_active !== false,
+    });
+
+    // Send welcome email asynchronously
+    sendWelcomeEmail(newUser).catch((err) => {
+      console.error("Error sending user creation welcome email:", err);
     });
 
     res.status(201).json({ message: "User created successfully", user: newUser });
