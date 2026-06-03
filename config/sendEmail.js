@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const path = require("path");
+const dns = require("dns");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const sendEmail = async (email, subject, message, html) => {
@@ -47,7 +48,9 @@ const sendEmail = async (email, subject, message, html) => {
       user: process.env.MY_EMAIL,
       pass: process.env.MY_PASSWORD,
     },
-    family: 4, // Force IPv4 to prevent ENETUNREACH errors on cloud platforms like Render
+    lookup: (hostname, options, callback) => {
+      dns.lookup(hostname, { family: 4 }, callback);
+    },
     tls: {
       rejectUnauthorized: false,
     },
