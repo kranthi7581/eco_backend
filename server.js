@@ -23,7 +23,7 @@ const allowedOrigins = [
   "http://localhost:5174",
   "http://127.0.0.1:5174",
   "https://ecofrontend-vert.vercel.app",
-  "https://ecofrontend-tau.vercel.app",
+  "https://ecofrontend-gules.vercel.app",
 ];
 
 app.use(
