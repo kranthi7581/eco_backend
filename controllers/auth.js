@@ -12,6 +12,12 @@ cookieParser();
 const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    console.log("=========================================");
+    console.log(`REGISTRATION REQUEST RECEIVED IN CODE:`);
+    console.log(`Username: ${username}`);
+    console.log(`Email: ${email}`);
+    console.log("=========================================");
+
     const existingUser = await userModel.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });

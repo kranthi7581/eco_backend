@@ -505,6 +505,11 @@ const generateWelcomeHtml = (user) => {
  * Main helper to send the welcome email
  */
 const sendWelcomeEmail = async (user) => {
+  console.log("=========================================");
+  console.log("sendWelcomeEmail HELPER CALLED");
+  console.log("Passed user data:", user ? { id: user.id, username: user.username, email: user.email } : "NULL");
+  console.log("=========================================");
+
   if (!user || !user.email) {
     console.error("Cannot send email: User email not provided", user);
     return;
