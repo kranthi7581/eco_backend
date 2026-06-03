@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # E-Commerce Backend API Engine
 
 A secure, high-performance, and scalable RESTful API built with **Node.js**, **Express.js**, and **Sequelize ORM** mapped to a **MySQL** database. This backend powers the entire E-Commerce demo application, supporting features like user authentication, role-based access control, shopping cart & wishlist management, product cataloging, reviews, coupons, dynamic order tracking, Razorpay payment processing, and automatic database seeding.
@@ -255,3 +256,6 @@ Server is running on port 5000
 | **POST** | `/review` | User | Submits review text and rating for an order-verified product |
 | **PUT** | `/review/:id` | User | Edits review content |
 | **DELETE** | `/review/:id` | User | Removes review |
+=======
+![ER Diagram](ecommerce_er_digram.png)
+>>>>>>> bcaf56339bb1f86ae60d61f7dd86937a7bccf7a5
