@@ -1,7 +1,7 @@
 const razorpay = require("../../config/razorpay");
 const { payment, orders, User } = require("../../models/relations");
 const crypto = require("crypto");
-const { sendPaymentSuccessEmail } = require("../../utils/emailTemplates");
+const { sendPaymentSuccessEmail, sendPaymentFailedEmail } = require("../../utils/emailTemplates");
 
 const createOrder = async (req, res) => {
   try {
@@ -65,6 +65,32 @@ const verifyPayment = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Payment verified successfully",
+      });
+    }
+
+    // Payment failed signature verification
+    await payment.update(
+      {
+        status: "cancelled",
+      },
+      {
+        where: {
+          razorpayOrderId,
+        },
+      },
+    );
+
+    const failedPayment = await payment.findOne({
+      where: { razorpayOrderId },
+      include: {
+        model: orders,
+        include: [User],
+      },
+    });
+
+    if (failedPayment && failedPayment.Order && failedPayment.Order.User) {
+      sendPaymentFailedEmail(failedPayment, failedPayment.Order.User).catch((err) => {
+        console.error("Error sending payment failed email:", err);
       });
     }
 

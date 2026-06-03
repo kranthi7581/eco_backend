@@ -538,6 +538,154 @@ Ecommerce Shop
   await sendEmail(user.email, subject, plainTextMessage, htmlMessage);
 };
 
+/**
+ * Generates the HTML layout for the payment failed email
+ */
+const generatePaymentFailedHtml = (paymentRecord, user) => {
+  const formattedDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Failed</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body style="background-color: #f8fafc; padding: 20px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);">
+    <!-- Header Banner -->
+    <tr>
+      <td align="center" style="background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%); padding: 35px 20px; color: #ffffff;">
+        <h2 style="margin: 0; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: #fee2e2;">
+          Payment Status
+        </h2>
+        <h1 style="margin: 10px 0 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.025em;">
+          Payment Failed
+        </h1>
+      </td>
+    </tr>
+
+    <!-- Body Content -->
+    <tr>
+      <td style="padding: 30px 24px;">
+        <p style="margin-top: 0; margin-bottom: 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+          Hello <strong>${user.username || "Valued Customer"}</strong>,
+        </p>
+
+        <!-- Status Box -->
+        <div style="background-color: #fee2e2; border-left: 4px solid #dc2626; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+          <h3 style="margin: 0 0 8px 0; color: #dc2626; font-size: 18px; font-weight: 600;">
+            Transaction Declined / Failed
+          </h3>
+          <p style="margin: 0; color: #475569; font-size: 14px; line-height: 1.5;">
+            Unfortunately, your payment attempt for Order #${paymentRecord.orderId || "N/A"} could not be completed successfully. No funds were debited from your account, or any pending debits will be refunded.
+          </p>
+        </div>
+
+        <!-- Failure Details Card -->
+        <h4 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 600; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em;">
+          Transaction Info
+        </h4>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f1f5f9; border-radius: 12px; padding: 18px; margin-bottom: 30px;">
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">ORDER ID</td>
+            <td align="right" style="font-size: 13px; color: #0f172a; padding-bottom: 8px; font-weight: 600;">#${paymentRecord.orderId || "N/A"}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">TRANSACTION DATE</td>
+            <td align="right" style="font-size: 13px; color: #0f172a; padding-bottom: 8px; font-weight: 600;">${formattedDate}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">AMOUNT ATTEMPTED</td>
+            <td align="right" style="font-size: 13px; color: #0f172a; padding-bottom: 8px; font-weight: 600;">₹${paymentRecord.amount?.toFixed(2) || "0.00"}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 13px; color: #64748b; padding-bottom: 8px; font-weight: 500;">STATUS</td>
+            <td align="right" style="font-size: 13px; color: #dc2626; padding-bottom: 8px; font-weight: 600; text-transform: uppercase;">Failed / Cancelled</td>
+          </tr>
+        </table>
+
+        <p style="font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 24px;">
+          Please try placing the order and completing the payment again. If the amount was deducted from your account, it will automatically be refunded back to your payment method within 5-7 business days.
+        </p>
+
+        <!-- Call to Action -->
+        <div align="center" style="margin-top: 30px; margin-bottom: 10px;">
+          <a href="http://localhost:3000/cart" style="background-color: #dc2626; color: #ffffff; padding: 12px 24px; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px; display: inline-block;">
+            Return to Cart & Try Again
+          </a>
+        </div>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="background-color: #f1f5f9; padding: 24px; text-align: center; border-top: 1px solid #e2e8f0;">
+        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">
+          If you have any questions, reply to this email or contact support.
+        </p>
+        <p style="margin: 10px 0 0 0; font-size: 12px; font-weight: 600; color: #475569;">
+          &copy; ${new Date().getFullYear()} Ecommerce Shop. All rights reserved.
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+};
+
+/**
+ * Main helper to send the payment failed email
+ */
+const sendPaymentFailedEmail = async (paymentRecord, user) => {
+  if (!user || !user.email) {
+    console.error("Cannot send email: User email not provided", { paymentId: paymentRecord.id, user });
+    return;
+  }
+
+  const subject = `Payment Failed for Order #${paymentRecord.orderId || "N/A"}`;
+  
+  const plainTextMessage = `
+Hello ${user.username || "Customer"},
+
+Unfortunately, your payment attempt for Order #${paymentRecord.orderId || "N/A"} failed.
+
+Payment details:
+- Order ID: #${paymentRecord.orderId || "N/A"}
+- Amount: ₹${paymentRecord.amount?.toFixed(2) || "0.00"}
+- Status: Failed / Cancelled
+
+Please try making your payment again: http://localhost:3000/cart
+
+If you have any questions, please reply to this email.
+
+Ecommerce Shop
+  `.trim();
+
+  const htmlMessage = generatePaymentFailedHtml(paymentRecord, user);
+
+  console.log(`Sending payment failure email for order #${paymentRecord.orderId} to ${user.email}`);
+  await sendEmail(user.email, subject, plainTextMessage, htmlMessage);
+};
+
 module.exports = {
   sendOrderStatusEmail,
   generateOrderStatusHtml,
@@ -545,4 +693,6 @@ module.exports = {
   generatePaymentSuccessHtml,
   sendWelcomeEmail,
   generateWelcomeHtml,
+  sendPaymentFailedEmail,
+  generatePaymentFailedHtml,
 };
