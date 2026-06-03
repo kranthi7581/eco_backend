@@ -4,7 +4,9 @@ const {
   products,
   orders,
   orderItems,
+  User,
 } = require("../../models/relations");
+const { sendOrderStatusEmail } = require("../../utils/emailTemplates");
 
 const checkout = async (req, res) => {
   try {
@@ -53,6 +55,30 @@ const checkout = async (req, res) => {
       }
     }
     await CartItem.destroy({ where: { cartId: userCart.id } });
+
+    // Fetch detailed order with relations to send the notification email
+    const detailedOrder = await orders.findByPk(order.id, {
+      include: [
+        {
+          model: User,
+          attributes: ["id", "username", "email"],
+        },
+        {
+          model: orderItems,
+          include: {
+            model: products,
+            attributes: ["id", "name", "price"],
+          },
+        },
+      ],
+    });
+
+    if (detailedOrder && detailedOrder.User) {
+      sendOrderStatusEmail(detailedOrder, detailedOrder.User).catch((err) => {
+        console.error("Error sending order placement email:", err);
+      });
+    }
+
     res.status(200).json({ 
       message: "Order placed successfully", 
       orderId: order.id, 

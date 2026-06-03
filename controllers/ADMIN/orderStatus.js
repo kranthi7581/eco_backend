@@ -1,4 +1,5 @@
 const { orders, User, orderItems, products } = require("../../models/relations");
+const { sendOrderStatusEmail } = require("../../utils/emailTemplates");
 
 const getAllOrders = async (req, res) => {
   try {
@@ -34,12 +35,33 @@ const updateOrderStatus = async (req, res) => {
         if (!["pending", "packing", "shipping", "delivered", "completed", "cancelled"].includes(status)) {
             return res.status(400).json({ message: "Invalid order status" });
         }
-        const order = await orders.findByPk(orderId);
+        const order = await orders.findByPk(orderId, {
+            include: [
+                {
+                    model: User,
+                    attributes: ["id", "username", "email"],
+                },
+                {
+                    model: orderItems,
+                    include: {
+                        model: products,
+                        attributes: ["id", "name", "price"],
+                    },
+                },
+            ],
+        });
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
         order.status = status;
         await order.save();
+
+        if (order.User) {
+            sendOrderStatusEmail(order, order.User).catch((err) => {
+                console.error("Error sending order status update email:", err);
+            });
+        }
+
         res.status(200).json({ message: "Order status updated successfully", order });
     } catch (error) {
         res.status(500).json({ message: "Error updating order status", error: error.message });

@@ -1,6 +1,7 @@
 const razorpay = require("../../config/razorpay");
 const { payment, orders, User } = require("../../models/relations");
 const crypto = require("crypto");
+const { sendPaymentSuccessEmail } = require("../../utils/emailTemplates");
 
 const createOrder = async (req, res) => {
   try {
@@ -45,6 +46,21 @@ const verifyPayment = async (req, res) => {
           },
         },
       );
+
+      // Fetch payment details along with the Order and User to send email
+      const completedPayment = await payment.findOne({
+        where: { razorpayOrderId },
+        include: {
+          model: orders,
+          include: [User],
+        },
+      });
+
+      if (completedPayment && completedPayment.Order && completedPayment.Order.User) {
+        sendPaymentSuccessEmail(completedPayment, completedPayment.Order.User).catch((err) => {
+          console.error("Error sending payment success email:", err);
+        });
+      }
 
       return res.status(200).json({
         success: true,
