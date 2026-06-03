@@ -15,8 +15,6 @@ router.post(
 );
 router.get(
   "/",
-  authmiddleware,
-  authorize("admin"),
   couponController.getAllCoupons,
 );
 router.put(

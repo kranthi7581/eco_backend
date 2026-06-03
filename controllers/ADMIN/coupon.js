@@ -68,7 +68,7 @@ const applyCoupon = async (req, res) => {
   try {
     const { code, totalAmount } = req.body;
 
-    const coupon = await Coupon.findOne({
+    const coupon = await coupons.findOne({
       where: {
         code,
         isActive: true,
