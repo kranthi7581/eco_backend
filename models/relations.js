@@ -11,6 +11,7 @@ const coupons = require("./ADMIN/coupon");
 const payment = require("./USER/payment");
 const Address = require("./USER/Address");
 const Review = require("./USER/Review");
+const ChatMessage = require("./ChatMessage");
 
 // Define associations for categories
 Category.hasMany(subcategory, {
@@ -210,6 +211,31 @@ orders.hasMany(Review, {
   onDelete: "CASCADE",
 });
 
+// Define associations for ChatMessage
+User.hasMany(ChatMessage, {
+  foreignKey: "senderId",
+  as: "sentMessages",
+  onDelete: "CASCADE",
+});
+
+User.hasMany(ChatMessage, {
+  foreignKey: "receiverId",
+  as: "receivedMessages",
+  onDelete: "CASCADE",
+});
+
+ChatMessage.belongsTo(User, {
+  foreignKey: "senderId",
+  as: "sender",
+  onDelete: "CASCADE",
+});
+
+ChatMessage.belongsTo(User, {
+  foreignKey: "receiverId",
+  as: "receiver",
+  onDelete: "CASCADE",
+});
+
 
 module.exports = {
   User,
@@ -225,4 +251,5 @@ module.exports = {
   payment,
   Address,
   Review,
+  ChatMessage,
 };
