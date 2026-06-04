@@ -11,6 +11,23 @@ const getAdminId = async () => {
   return admin ? admin.id : null;
 };
 
+// GET /chat/admin-info - Get basic admin info (accessible to logged in users)
+router.get("/admin-info", authmiddleware, async (req, res) => {
+  try {
+    const admin = await User.findOne({
+      where: { role: "admin" },
+      attributes: ["id", "username", "image"]
+    });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+    res.status(200).json(admin);
+  } catch (error) {
+    console.error("Error fetching admin info:", error);
+    res.status(500).json({ message: "Failed to fetch admin details" });
+  }
+});
+
 // GET /chat/history/:userId - Fetch history between a user and admin
 router.get("/history/:userId", authmiddleware, async (req, res) => {
   try {
