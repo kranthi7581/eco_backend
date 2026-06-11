@@ -8,9 +8,10 @@ const redis = new Redis({
   host: process.env.REDIS_HOST || "127.0.0.1",
   port: parseInt(process.env.REDIS_PORT, 10) || 6379,
   password: process.env.REDIS_PASSWORD || undefined,
+  enableOfflineQueue: false, // Fail fast when Redis is down, letting try/catch fall back to DB instantly instead of hanging requests
   retryStrategy(times) {
-    // Reconnect delay increases with retries, capped at 2 seconds
-    const delay = Math.min(times * 50, 2000);
+    // Reconnect delay increases with retries, capped at 10 seconds to avoid high CPU usage/spam
+    const delay = Math.min(times * 1000, 10000);
     return delay;
   },
 });
