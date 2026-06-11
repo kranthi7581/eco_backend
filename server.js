@@ -68,6 +68,9 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
+  pingTimeout: 60000,
+  pingInterval: 30000,
+  transports: ["websocket", "polling"],
 });
 
 // Middleware to authenticate socket connections
