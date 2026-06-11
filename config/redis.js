@@ -15,12 +15,29 @@ const redis = new Redis({
   },
 });
 
-redis.on("connect", () => {
-  console.log("Redis client connected successfully");
+let cacheRedisDownLogged = false;
+
+redis.on("error", (err) => {
+    if (err.code === "ECONNREFUSED") {
+        if (!cacheRedisDownLogged) {
+            console.warn("⚠️  [CACHE] Redis unavailable — falling back to DB");
+            cacheRedisDownLogged = true;
+        }
+        return;
+    }
+    console.error("❌ [CACHE] Redis error:", err.message);
 });
 
-redis.on("error", (error) => {
-  console.error("Redis client connection error:", error.message);
+redis.on("ready", () => {
+    if (cacheRedisDownLogged) {
+        console.log("✅ [CACHE] Redis reconnected");
+    } else {
+        console.log("✅ [CACHE] Redis connected");
+    }
+    cacheRedisDownLogged = false;
 });
+
+// Export the redis client directly to prevent breaking imports in other files
+redis.isConnected = () => redis.status === "ready";
 
 module.exports = redis;
